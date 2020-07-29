@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_16255_whatever.example_client</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>example_client</name>
+        <script><![CDATA[var example_client = Class.create();
+example_client.prototype = {
+    initialize: function() {
+    },
+
+    type: 'example_client',
+	
+	get_data: function () {
+		gs.info("schedule started.");
+		
+		// create a record in responses table
+		// get its sys_id
+		var responseGr = new GlideRecord('x_16255_whatever_responses');
+		responseGr.status = 'New';
+		response_sys_id = responseGr.insert();
+		gs.info("response sys id is " + response_sys_id);
+		
+
+		var request = new sn_ws.RESTMessageV2();
+		request.setEndpoint('http://example.com');
+		request.setHttpMethod("get");
+		// request.setBasicAuth(this.accounts.username, this.account.password.getDecryptedValue());
+		request.setHttpTimeout(30000000); // default 30 secs ;  To be taken from Properties
+		request.saveResponseBodyAsAttachment('x_16255_whatever_responses', response_sys_id, 'response.html');
+		var response = request.execute();
+		gs.info(response.statusCode);
+
+		var r2Gr = new GlideRecord('x_16255_whatever_responses');
+		r2Gr.get(response_sys_id);
+		r2Gr.status = "Success";
+		response_sys_id = responseGr.update();
+
+		gs.info('schedule finished');		
+	}
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-07-29 13:33:54</sys_created_on>
+        <sys_id>43677fe5db921010ba0b2706ca9619d9</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>example_client</sys_name>
+        <sys_package display_value="whatever" source="x_16255_whatever">3ba0f21ddb521010ba0b2706ca961998</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="whatever">3ba0f21ddb521010ba0b2706ca961998</sys_scope>
+        <sys_update_name>sys_script_include_43677fe5db921010ba0b2706ca9619d9</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-07-29 13:48:35</sys_updated_on>
+    </sys_script_include>
+</record_update>
